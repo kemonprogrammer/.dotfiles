@@ -308,6 +308,19 @@ passs() {
     fi
 }
 
+# edit a password
+passe() {
+    local target
+    target=$(_fzf_pass_list)
+    
+    if [[ -n "$target" ]]; then
+        echo "Editing content of \"$target\""
+        command pass edit "$target"
+    else
+        echo "No password selected."
+    fi
+}
+
 passb() {
     local target
     target=$(_fzf_pass_list)
