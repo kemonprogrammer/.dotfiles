@@ -2,3 +2,13 @@
 binding='<Control><Shift>Escape'
 command='flatpak run io.missioncenter.MissionCenter'
 name='Mission Center'
+
+[custom1]
+binding='<Shift><Super>t'
+command='flatpak run com.github.dynobo.normcap'
+name='Text extractor (NormCap)'
+
+[custom2]
+binding='<Shift><Super>c'
+command='flatpak run nl.hjdskes.gcolor3'
+name='Color Picker'
