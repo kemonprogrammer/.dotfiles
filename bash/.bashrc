@@ -173,10 +173,16 @@ fi
 
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 
+# export FZF_CTRL_T_OPTS="
+#   --walker-skip .git,node_modules,target
+#   --preview 'if file --mime-type -b {} | grep -qF image; then chafa -f kitty -s \${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES} {}; else bat -n --color=always {}; fi'
+#   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+
 export FZF_CTRL_T_OPTS="
   --walker-skip .git,node_modules,target
-  --preview 'bat -n --color=always {}'
+  --preview 'printf \"\e_Gi=1,a=d;\e\\\\\"; if file --mime-type -b {} | grep -qF image; then chafa -f kitty -s \${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES} {}; else bat -n --color=always {}; fi'
   --bind 'ctrl-/:change-preview-window(down|hidden|)'"
+
 
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
