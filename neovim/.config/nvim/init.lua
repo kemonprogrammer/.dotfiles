@@ -43,11 +43,11 @@ Plug 'rcarriga/nvim-notify'
 -- Plug 'vim-airline/vim-airline'
 
 -- Fuzzy finder
-Plug ('junegunn/fzf', { ['do'] = './install --all' })
+Plug('junegunn/fzf', { ['do'] = './install --all' })
 Plug 'junegunn/fzf.vim'
 
 -- Highlighting
-Plug ('nvim-treesitter/nvim-treesitter', {['do'] = ':TSUpdate'})
+Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
 
 -- Auto-pairs
 -- Plug 'jiangmiao/auto-pairs'
@@ -62,7 +62,7 @@ Plug 'isakbm/gitgraph.nvim'
 -- Latex
 Plug 'lervag/vimtex'
 Plug 'nvim-telescope/telescope-bibtex.nvim'
-Plug 'barreiroleo/ltex_extra.nvim'  -- add dictionary for latex language server
+Plug 'barreiroleo/ltex_extra.nvim' -- add dictionary for latex language server
 
 -- LSP
 Plug 'mason-org/mason.nvim'
@@ -70,7 +70,7 @@ Plug 'mason-org/mason-lspconfig.nvim'
 Plug 'neovim/nvim-lspconfig'
 
 -- LSP Lua
-Plug ('folke/lazydev.nvim', { ['for'] = 'lua' })
+Plug('folke/lazydev.nvim', { ['for'] = 'lua' })
 Plug 'Bilal2453/luvit-meta'
 
 -- Completion manager
@@ -78,9 +78,12 @@ Plug 'hrsh7th/nvim-cmp'
 Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/cmp-buffer'
 -- Snippets
-Plug 'L3MON4D3/LuaSnip'        -- Snippet engine (required for most cmp setups)
+Plug 'L3MON4D3/LuaSnip'         -- Snippet engine (required for most cmp setups)
 Plug 'saadparwaiz1/cmp_luasnip' -- Bridge between LuaSnip and nvim-cmp
 Plug 'rafamadriz/friendly-snippets'
+
+-- speed up
+Plug 'nvimtools/hydra.nvim' -- instead of ]c]c]c ]cccc
 
 -- Plug 'gelguy/wilder.nvim'   -- blocks main thread, can't ignore system commands `!`
 -- Plug 'ncm2/ncm2'
@@ -100,13 +103,16 @@ Plug 'nvim-tree/nvim-web-devicons'
 
 -- File finder
 Plug 'nvim-lua/plenary.nvim'
-Plug ('nvim-telescope/telescope.nvim', { ['branch'] = 'master' })
-Plug ('nvim-telescope/telescope-fzf-native.nvim', { ['do'] = 'make' })
+Plug('nvim-telescope/telescope.nvim', { ['branch'] = 'master' })
+Plug('nvim-telescope/telescope-fzf-native.nvim', { ['do'] = 'make' })
 
 -- File explorer
 Plug 'preservim/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
 -- Plug 'scrooloose/nerdtree-project-plugin'  -- line 45 throws an error
 Plug 'ryanoasis/vim-devicons'
+
+
 
 -- etc
 Plug 'ThePrimeagen/vim-be-good'
@@ -116,11 +122,11 @@ vim.call('plug#end')
 
 ----  Settings  ----
 vim.opt.number = true
-vim.opt.relativenumber = true  -- relative line numbers
-vim.opt.mouse = 'a'  -- enable mouse
-vim.opt.ignorecase = true  -- to enable smartcase
-vim.opt.smartcase = true  -- case insensitive search in lowercase and sensitive otherwise
-vim.opt.expandtab = true  -- fill tabs with spaces
+vim.opt.relativenumber = true -- relative line numbers
+vim.opt.mouse = 'a'           -- enable mouse
+vim.opt.ignorecase = true     -- to enable smartcase
+vim.opt.smartcase = true      -- case insensitive search in lowercase and sensitive otherwise
+vim.opt.expandtab = true      -- fill tabs with spaces
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
 -- change to directory of currently opened file
@@ -146,6 +152,14 @@ vim.opt.shiftwidth = 2
 -- autocmd BufEnter * if bufname('#') =~ 'NERD_tree_\d\+' && bufname('%') !~ 'NERD_tree_\d\+' && winnr('$') > 1 |
 --     \ let buf=bufnr() | buffer# | execute "normal! \<C-W>w" | execute 'buffer'.buf | endif
 
+vim.g.NERDTreeColorMapCustom = {
+  Modified  = { "#4FF0FF", "Cyan", "NONE", "NONE" },
+  Staged    = { "#62CC47", "Green", "NONE", "NONE" },
+  Untracked = { "#D1675A", "Red", "NONE", "NONE" },
+  Dirty     = { "#4FF0FF", "Cyan", "NONE", "NONE" },
+  Clean     = { "#A9B837", "Grey", "NONE", "NONE" }
+}
+
 
 
 -- --- Mappings ---
@@ -157,15 +171,15 @@ vim.api.nvim_set_keymap('i', '<C-c>', '<Esc>', { noremap = true, silent = true }
 vim.keymap.set('n', '<C-s>', function()
   vim.cmd('update')
   print("Written")
-end, { desc = 'Save'})
-vim.api.nvim_set_keymap('v', '<C-s>', '<cmd>update<CR>', { desc = 'Save'})
+end, { desc = 'Save' })
+vim.api.nvim_set_keymap('v', '<C-s>', '<cmd>update<CR>', { desc = 'Save' })
 vim.api.nvim_set_keymap('i', '<C-s>', '<C-o><cmd>update<CR>', { desc = 'Save and return to insert mode' })
 ---- TODO: try neovims beta feature CTRL+S
 --inoremap <silent> <C-S> <C-O>:update<CR>
 --imap('<C-s>', '<C-O>:update<CR>')
 
 ---- Leader shortcuts
---nnoremap <leader>ee :NERDTreeFocus<CR>
+vim.keymap.set('n', '<leader>e', '<cmd>NERDTreeToggle<CR>', { desc = 'Toggle Nerdtree' })
 --nnoremap <leader>et :NERDTreeToggle<CR>
 ---- nmap <Leader>fzf :Files<CR>
 --nmap <Leader>f :GFiles<CR>
@@ -397,7 +411,7 @@ vim.keymap.set('n', '<C-g>', builtin.live_grep, {})
 
 local actions = require("telescope.actions")
 
-require('telescope').setup{
+require('telescope').setup {
   defaults = {
     preview = {
       treesitter = false,
@@ -405,8 +419,8 @@ require('telescope').setup{
     -- wrap_results = true,
     mappings = {
       i = {
-        ["<esc>"] = actions.close,      -- Close on first Esc
-        ["<C-c>"] = actions.close,      -- Close on first
+        ["<esc>"] = actions.close, -- Close on first Esc
+        ["<C-c>"] = actions.close, -- Close on first
         -- ["<C-c>"] = { "<esc>", type = "command" }, -- Ctrl-C to enter Normal Mode
       },
     },
@@ -439,6 +453,18 @@ vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { desc = "LSP started" })
 vim.keymap.set("n", "<leader>lr", "<cmd>LspRestart<CR>", { desc = "LSP restarted" })
 vim.keymap.set("n", "<leader>le", "<cmd>LspStop<CR>", { desc = "LSP stopped" })
 vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, { desc = "Rename symbol" })
+vim.keymap.set('n', 'gd', vim.lsp.buf.definition, { desc = 'LSP Go to Definition' })
+vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, { desc = "LSP Code Action" })
+vim.keymap.set('n', '<leader>co', function()
+  vim.lsp.buf.code_action({
+    apply = true,
+    context = {
+      only = { "source.organizeImports.vtsls" },
+      diagnostics = {},
+    },
+  })
+end, { desc = "Organize / Add Imports" })
+
 
 
 -- Lua Lsp types, needs to be set up before lua-ls
@@ -504,34 +530,51 @@ vim.api.nvim_create_autocmd("LspAttach", {
 
 vim.lsp.enable('lua_ls')
 
+
 require("mason-lspconfig").setup({
   ensure_installed = {
     "lua_ls",
-    "ts_ls",
+    "vtsls",
   },
 })
 
-local lspconfig = require("lspconfig")
 
--- require("mason-lspconfig").setup_handlers({
---   -- The first entry is the default handler for all installed servers
---   function(server_name)
---     lspconfig[server_name].setup({})
---   end,
---
---   -- You can add targeted settings for ts_ls if needed
---   ["ts_ls"] = function()
---   end,
--- })
-
-vim.lsp.config['ts_ls'] = {
-  init_options = {
-    preferences = {
-      -- Example configuration options
-      disableSuggestions = false,
+vim.lsp.config['vtsls'] = {
+  capabilities = capabilities,
+  settings = {
+    typescript = {
+      suggest = {
+        completeFunctionCalls = true,
+      },
+      -- Enable automatic import additions on completion
+      preferences = {
+        importModuleSpecifier = "shortest",
+        includePackageJsonAutoImports = "auto",
+      },
+      -- Enable inlay hints if you use them
+      inlayHints = {
+        parameterNames = { enabled = "all" },
+        variableTypes = { enabled = true },
+      },
+    },
+    javascript = {
+      suggest = {
+        completeFunctionCalls = true,
+      },
+      preferences = {
+        importModuleSpecifier = "shortest",
+      },
+    },
+    vtsls = {
+      -- Automatically handle workspace actions
+      enableMoveToFileCodeAction = true,
+      autoUseWorkspaceTsdk = true,
     },
   },
 }
+
+-- 3. Enable LSPs
+vim.lsp.enable("vtsls")
 
 -- --- Completion manager ---
 require("luasnip.loaders.from_vscode").lazy_load()
@@ -561,16 +604,19 @@ cmp.setup({
     end, { 'i', 's' }),
     ['<CR>'] = cmp.mapping(function(fallback)
       if cmp.visible() then
-        -- If a snippet is selected, expand it. Otherwise, confirm the text.
         if luasnip.expandable() then
           luasnip.expand()
         else
-          cmp.confirm({ select = true })
+          -- Pass select = true so selecting an item automatically triggers LSP import edits
+          cmp.confirm({
+            select = true,
+            behavior = cmp.ConfirmBehavior.Insert,
+          })
         end
       else
-        fallback() -- Crucial! Lets other plugins (like autopairs) use the Enter key.
+        fallback()
       end
-    end),
+    end, { "i", "s" }),
   }),
   sources = cmp.config.sources({
     { name = 'nvim_lsp' },
@@ -627,8 +673,10 @@ end, { desc = 'Toggle Quickfix (Vimtex Errors)', silent = true })
 --         end, { buffer = true, desc = "Fix quotes" })
 --     end,
 -- })
+vim.keymap.set('n', '<C-M-l>', vim.lsp.buf.format, { desc = 'Format whole file' })
 
--- --- Latex LSP --- 
+
+-- --- Latex LSP ---
 
 vim.lsp.config['texlab'] = {
   settings = {
@@ -679,7 +727,7 @@ vim.lsp.enable('ltex')
 -- --- Git ---
 
 -- --- Fugitive ---
-vim.keymap.set("n", "<leader>gs",  "<cmd>Git<CR>")
+vim.keymap.set("n", "<leader>gs", "<cmd>Git<CR>")
 vim.keymap.set("n", "<leader>gdd", "<cmd>Gvdiffsplit<CR>")
 vim.keymap.set("n", "<leader>gds", "<cmd>Gvdiffsplit !<CR>")
 vim.keymap.set("n", "<leader>gcc", "<cmd>Git commit<CR>")
@@ -701,20 +749,22 @@ vim.keymap.set("n", "<leader>gw", "<cmd>Gwrite<CR>") -- git add %
 
 -- --- Git signs ---
 
--- Define the Hunk Navigation Logic
+-- Define the Hunk Navigation Logic (Fixed)
 local function nav_hunk(dir)
   local gitsigns = require('gitsigns')
   if vim.wo.diff then
-    -- Use [[ and ]] to escape the brackets in strings if needed
     vim.cmd('normal! ' .. (dir == 'next' and ']c' or '[c'))
   else
     gitsigns.nav_hunk(dir)
   end
-  -- Center immediately after jump -- Doesn't work yet
-  vim.cmd("normal! zz")
+
+  -- Force synchronous screen centering and redraw
+  -- so Hydra doesn't batch the visual updates until exit
+  -- vim.cmd("normal! zz")
+  -- vim.cmd("redraw")
 end
 
-require('gitgraph').setup{
+require('gitgraph').setup {
   git_cmd = "git",
   symbols = {
     -- -- default
@@ -722,32 +772,32 @@ require('gitgraph').setup{
     -- commit = '*',
 
     -- ghostty or kitty
-    merge_commit = '',
-    commit = '',
+    merge_commit     = '',
+    commit           = '',
     merge_commit_end = '',
-    commit_end = '',
+    commit_end       = '',
 
     -- Advanced symbols
-    GVER   = '',
-    GHOR   = '',
-    GCLD   = '',
-    GCRD   = '╭',
-    GCLU   = '',
-    GCRU   = '',
-    GLRU   = '',
-    GLRD   = '',
-    GLUD   = '',
-    GRUD   = '',
-    GFORKU = '',
-    GFORKD = '',
-    GRUDCD = '',
-    GRUDCU = '',
-    GLUDCD = '',
-    GLUDCU = '',
-    GLRDCL = '',
-    GLRDCR = '',
-    GLRUCL = '',
-    GLRUCR = '',
+    GVER             = '',
+    GHOR             = '',
+    GCLD             = '',
+    GCRD             = '╭',
+    GCLU             = '',
+    GCRU             = '',
+    GLRU             = '',
+    GLRD             = '',
+    GLUD             = '',
+    GRUD             = '',
+    GFORKU           = '',
+    GFORKD           = '',
+    GRUDCD           = '',
+    GRUDCU           = '',
+    GLUDCD           = '',
+    GLUDCU           = '',
+    GLRDCL           = '',
+    GLRDCR           = '',
+    GLRUCL           = '',
+    GLRUCR           = '',
   },
   format = {
     timestamp = '%H:%M:%S %d-%m-%Y',
@@ -756,11 +806,11 @@ require('gitgraph').setup{
   hooks = {
     on_select_commit = function(commit)
       print('Opening diff for: ' .. commit.hash)
-      require("diffview").open({commit.hash .. "^!"})
+      require("diffview").open({ commit.hash .. "^!" })
     end,
     on_select_range_commit = function(from, to)
       print('Opening diff from ' .. from.hash .. ' to ' .. to.hash)
-      require("diffview").open({from.hash, '..', to.hash})
+      require("diffview").open({ from.hash, '..', to.hash })
     end,
   },
   keys = {
@@ -772,7 +822,7 @@ require('gitgraph').setup{
       desc = "GitGraph - Draw",
     }
   },
-  log_level=0
+  log_level = 0
 }
 
 vim.keymap.set('n', '<leader>gl',
@@ -782,7 +832,7 @@ vim.keymap.set('n', '<leader>gl',
   { desc = 'GitGraph - Draw' }
 )
 
-require('gitsigns').setup{
+require('gitsigns').setup {
   on_attach = function(bufnr)
     local gitsigns = require('gitsigns')
 
@@ -795,11 +845,11 @@ require('gitsigns').setup{
     -- Navigation
     map('n', ']c', make_repeatable(']c', function()
       nav_hunk('next')
-    end), { desc = "Next hunk (repeatable)"})
+    end), { desc = "Next hunk (repeatable)" })
 
     map('n', '[c', function()
       if vim.wo.diff then
-        vim.cmd.normal({'[c', bang = true})
+        vim.cmd.normal({ '[c', bang = true })
       else
         gitsigns.nav_hunk('prev')
         -- autocenter after
@@ -844,7 +894,7 @@ require('gitsigns').setup{
     map('n', '<leader>tw', gitsigns.toggle_word_diff)
 
     -- Text object
-    map({'o', 'x'}, 'ih', gitsigns.select_hunk)
+    map({ 'o', 'x' }, 'ih', gitsigns.select_hunk)
   end
 }
 
@@ -861,11 +911,11 @@ vim.api.nvim_create_autocmd("FileType", {
 
 -- --- Explorer ---
 if is_wsl then
-  vim.keymap.set("n", "<leader>e", "<cmd>silent !explorer.exe $(wslpath -w %:p:h)<CR>",
-  { desc = "Open current file in explorer" })
+  vim.keymap.set("n", "<leader>se", "<cmd>silent !explorer.exe $(wslpath -w %:p:h)<CR>",
+    { desc = "Open current file in explorer" })
 else
-  vim.keymap.set("n", "<leader>e", "<cmd>silent !xdg-open %:p:h<CR>",
-  { desc = "Open current file in explorer" })
+  vim.keymap.set("n", "<leader>se", "<cmd>silent !xdg-open %:p:h<CR>",
+    { desc = "Open current file in explorer" })
 end
 
 -- --- Filetype specific ---
@@ -882,7 +932,7 @@ vim.api.nvim_create_autocmd("FileType", {
         filter = function(a) return a.title:match("Add .* to dictionary") end,
         apply = true,
       })
-    end , { desc = "LTeX: Add word to dictionary" })
+    end, { desc = "LTeX: Add word to dictionary" })
   end,
 })
 
@@ -890,7 +940,7 @@ vim.api.nvim_create_autocmd("FileType", {
 -- find out file type using `:set filetype?`
 
 vim.api.nvim_create_autocmd("FileType", {
-  pattern = { "fugitive", "lspinfo", "git", "help", "man", "gitsigns.diff", "gitgraph" },
+  pattern = { "fugitive", "lspinfo", "git", "help", "man", "gitsigns.diff", "gitgraph", "qf" },
   callback = function(args)
     vim.keymap.set('n', 'q', '<cmd>bwipeout!<CR>', { buffer = args.buf, silent = true })
   end,
@@ -931,12 +981,11 @@ vim.opt.fillchars:append({ diff = "╱", eob = " " })
 vim.api.nvim_create_autocmd("ColorScheme", {
   pattern = "*",
   callback = function()
-
     -- add and change filler characters
-    vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#2d4f34" }) -- dark green
+    vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#2d4f34" })    -- dark green
     vim.api.nvim_set_hl(0, "DiffChange", { bg = "#2b3a4a" }) -- dark blue
 
-    -- Deletion 
+    -- Deletion
     -- right side (filler characters)
     vim.api.nvim_set_hl(0, "DiffviewDiffFill", { fg = muted_fg, bg = "NONE" })
     vim.api.nvim_set_hl(0, "DiffviewDiffDelete", { fg = muted_fg, bg = "NONE" })
@@ -1027,3 +1076,67 @@ vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { sp = muted_warning, undercur
 -- vim.api.nvim_set_hl(0, "CursorLine", { bg = "#2e3440" })
 
 -- set statusline+=%{get(b:,'gitsigns_status','')}
+
+-- # Hydra
+local Hydra = require("hydra")
+
+-- 1. WINDOW NAVIGATION & RESIZING (<C-w>lhjk><)
+Hydra({
+  name = "Window Management",
+  mode = "n",
+  body = "<C-w>", -- The native window prefix is your entry point
+  config = { color = "red" },
+  heads = {
+    -- { "h",     "<C-w>h" },
+    -- { "j",     "<C-w>j" },
+    -- { "k",     "<C-w>k" },
+    -- { "l",     "<C-w>l" },
+    { ">",     "5<C-w>>", { desc = "Resize +" } },
+    { "<",     "5<C-w><", { desc = "Resize -" } },
+    { "<Esc>", nil,       { exit = true } },
+  }
+})
+
+-- 2. VIEWPORT SCROLLING & CENTERING (zzbtb)
+Hydra({
+  name = "Viewport Scroll",
+  mode = "n",
+  body = "z", -- Typing 'z' starts the hydra
+  config = { color = "red" },
+  heads = {
+    { "z",     "zz" }, -- 'zz' centers screen and keeps hydra open
+    { "t",     "zt" }, -- 't' now means 'zt'
+    { "b",     "zb" }, -- 'b' now means 'zb'
+    { "<Esc>", nil, { exit = true } },
+  }
+})
+
+-- 3. FORWARD NAVIGATION (]hch]m)
+Hydra({
+  name = "Forward Jumps",
+  mode = "n",
+  body = "]", -- Typing ']' starts the hydra
+  config = { color = "red" },
+  heads = {
+    { "h",     function() nav_hunk('next') end, { desc = "Next Hunk" } },
+    { "c",     "]c",                            { desc = "Next Change" } },
+    { "]",     "]]",                            { desc = "Next Class/Method start" } },
+    { "m",     "]m",                            { desc = "Next Method start" } },
+    { "<Esc>", nil,                             { exit = true } },
+  }
+})
+
+-- 4. BACKWARD NAVIGATION ([hch]m)
+Hydra({
+  name = "Backward Jumps",
+  mode = "n",
+  body = "[", -- Typing '[' starts the hydra
+  config = { color = "red" },
+  heads = {
+    { "h",     function() nav_hunk('prev') end, { desc = "Prev Hunk" } },
+    { "c",     "[c",                            { desc = "Prev Change" } },
+    { "[",     "[[",                            { desc = "Prev Class/Method start" } },
+    { "m",     "[m",                            { desc = "Prev Method start" } },
+    { "<Esc>", nil,                             { exit = true } },
+  }
+})
