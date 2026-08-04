@@ -466,13 +466,22 @@ vim.keymap.set('n', '<leader>co', function()
 end, { desc = "Organize / Add Imports" })
 
 
-
 -- Lua Lsp types, needs to be set up before lua-ls
 require("lazydev").setup({
   library = {
     { path = "luvit-meta/library", words = { "vim%.uv" } },
   },
 })
+
+
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "lua_ls",
+    "vtsls",
+    "emmet_ls"
+  },
+})
+
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
@@ -498,6 +507,11 @@ vim.lsp.config['lua_ls'] = {
       telemetry = { enable = false },
     },
   },
+}
+
+vim.lsp.config['lua_ls'] = {
+  -- filetypes = { "lua" },
+  capabilities = capabilities,
 }
 
 
@@ -529,14 +543,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 })
 
 vim.lsp.enable('lua_ls')
-
-
-require("mason-lspconfig").setup({
-  ensure_installed = {
-    "lua_ls",
-    "vtsls",
-  },
-})
 
 
 vim.lsp.config['vtsls'] = {
