@@ -977,7 +977,7 @@ vim.api.nvim_create_autocmd("CmdWinEnter", {
 vim.api.nvim_set_hl(0, "EndOfBuffer", { fg = "bg" })
 
 
--- ## diff view
+-- ## Diffview
 local muted_fg = "#434c5e" -- blue/grey
 
 
@@ -1009,6 +1009,11 @@ vim.api.nvim_create_autocmd("User", {
       vim.api.nvim_set_hl(0, "DiffAdd", { bg = "#522b2b" })
     end
   end,
+})
+
+vim.keymap.set('v', '<leader>gh', ':DiffviewFileHistory<CR>', {
+  desc = 'Diffview: Selected lines history',
+  silent = true,
 })
 
 
