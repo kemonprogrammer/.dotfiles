@@ -193,6 +193,29 @@ vim.keymap.set('n', '<leader>so', function()
 end, { desc = 'Source init.lua' })
 
 
+local maximize_session = nil
+local maximize_hidden_save = nil
+
+local function maximize_toggle()
+  if maximize_session then
+    vim.cmd("source " .. maximize_session)
+    vim.fn.delete(maximize_session)
+    maximize_session = nil
+    vim.o.hidden = maximize_hidden_save
+    maximize_hidden_save = nil
+  else
+    maximize_hidden_save = vim.o.hidden
+    maximize_session = vim.fn.tempname()
+    vim.o.hidden = true
+    vim.cmd("mksession! " .. maximize_session)
+    vim.cmd("only")
+  end
+end
+
+vim.keymap.set("n", "<C-W>O", maximize_toggle, { desc = "Maximize toggle" })
+vim.keymap.set("n", "<C-W>o", maximize_toggle, { desc = "Maximize toggle" })
+vim.keymap.set("n", "<C-W><C-O>", maximize_toggle, { desc = "Maximize toggle" })
+
 -- # Notify
 vim.notify = require("notify")
 
