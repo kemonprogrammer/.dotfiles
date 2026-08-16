@@ -83,7 +83,7 @@ Plug 'saadparwaiz1/cmp_luasnip' -- Bridge between LuaSnip and nvim-cmp
 Plug 'rafamadriz/friendly-snippets'
 
 -- speed up
--- Plug 'nvimtools/hydra.nvim' -- instead of ]c]c]c ]cccc
+-- Plug 'nvimtools/hydra.nvim'
 
 -- Plug 'gelguy/wilder.nvim'   -- blocks main thread, can't ignore system commands `!`
 -- Plug 'ncm2/ncm2'
@@ -758,7 +758,7 @@ vim.lsp.enable('ltex')
 
 -- --- Fugitive ---
 vim.keymap.set("n", "<leader>gs", "<cmd>Git<CR>")
-vim.keymap.set("n", "<leader>gdd", "<cmd>Gvdiffsplit<CR>")
+vim.keymap.set("n", "<leader>gdd", "<cmd>Gvdiffsplit HEAD<CR>")
 vim.keymap.set("n", "<leader>gds", "<cmd>Gvdiffsplit !<CR>")
 vim.keymap.set("n", "<leader>gcc", "<cmd>Git commit<CR>")
 vim.keymap.set("n", "<leader>gcam", function()
@@ -783,7 +783,7 @@ vim.keymap.set("n", "<leader>gw", "<cmd>Gwrite<CR>") -- git add %
 local function nav_hunk(dir)
   local gitsigns = require('gitsigns')
   if vim.wo.diff then
-    vim.cmd('normal! ' .. (dir == 'next' and ']c' or '[c'))
+    vim.cmd('normal! ' .. (dir == 'next' and ']h' or '[h'))
   else
     gitsigns.nav_hunk(dir)
   end
@@ -873,13 +873,13 @@ require('gitsigns').setup {
     end
 
     -- Navigation
-    map('n', ']c', make_repeatable(']c', function()
+    map('n', ']h', make_repeatable(']h', function()
       nav_hunk('next')
     end), { desc = "Next hunk (repeatable)" })
 
-    map('n', '[c', function()
+    map('n', '[h', function()
       if vim.wo.diff then
-        vim.cmd.normal({ '[c', bang = true })
+        vim.cmd.normal({ '[h', bang = true })
       else
         gitsigns.nav_hunk('prev')
         -- autocenter after
