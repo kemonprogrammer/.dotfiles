@@ -154,7 +154,6 @@ export SDKMAN_DIR="$HOME/.sdkman"
 
 export PATH="/mnt/c/WINDOWS:$PATH"
 
-eval "$(oh-my-posh init bash --config ~/.config/ohmyposh/zen.toml)"
 
 # Add JBang to environment
 alias j!=jbang
@@ -369,4 +368,7 @@ fi
 if [ -e "$HOME/.cargo/env" ]; then
     . "$HOME/.cargo/env"
 fi
+
+# Needs to be at end, after PATH is set
+eval "$(oh-my-posh init bash --config ~/.config/ohmyposh/zen.toml)"
 
