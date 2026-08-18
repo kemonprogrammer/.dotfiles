@@ -50,6 +50,7 @@ Plug 'junegunn/fzf.vim'
 
 -- Highlighting
 Plug('nvim-treesitter/nvim-treesitter', { ['do'] = ':TSUpdate' })
+Plug 'nvim-treesitter/nvim-treesitter-textobjects'
 
 -- Auto-pairs
 -- Plug 'jiangmiao/auto-pairs'
@@ -190,6 +191,11 @@ vim.g.NERDTreeColorMapCustom = {
 
 
 -- --- Mappings ---
+-- todo back key to CTRL-o and forward key to CTRL-i
+-- vim.keymap.set({ 'n', 'i', 'v' }, '<X1Mouse>', '<C-o>', { noremap = true, silent = true })
+vim.keymap.set('n', '<F13>', '<C-o>')
+vim.keymap.set('n', '<F14>', '<C-i>')
+
 -- Disable CTRL + c message
 vim.api.nvim_set_keymap('n', '<C-c>', '<Esc>', { noremap = true, silent = true })
 vim.api.nvim_set_keymap('i', '<C-c>', '<Esc>', { noremap = true, silent = true })
@@ -201,9 +207,6 @@ vim.keymap.set('n', '<C-s>', function()
 end, { desc = 'Save' })
 vim.api.nvim_set_keymap('v', '<C-s>', '<cmd>update<CR>', { desc = 'Save' })
 vim.api.nvim_set_keymap('i', '<C-s>', '<C-o><cmd>update<CR>', { desc = 'Save and return to insert mode' })
----- TODO: try neovims beta feature CTRL+S
---inoremap <silent> <C-S> <C-O>:update<CR>
---imap('<C-s>', '<C-O>:update<CR>')
 
 ---- Leader shortcuts
 vim.keymap.set('n', '<leader>e', '<cmd>NERDTreeToggle<CR>', { desc = 'Toggle Nerdtree' })
@@ -371,7 +374,7 @@ local function toggle_comment()
   vim.api.nvim_win_set_cursor(0, { row, new_col })
 end
 
-vim.keymap.set({'n', 'i'}, '<C-/>', toggle_comment, { desc = 'Toggle comment' })
+vim.keymap.set({ 'n', 'i' }, '<C-/>', toggle_comment, { desc = 'Toggle comment' })
 
 vim.keymap.set('x', '<C-/>', '<ESC><CMD>lua require("Comment.api").locked("toggle.linewise")(vim.fn.visualmode())<CR>')
 
@@ -410,6 +413,102 @@ vim.api.nvim_set_hl(0, 'CurSearch', { bg = '#61afef', fg = '#282c34', bold = tru
 -- Treesitter enable highlight on each new buffer
 -- ??
 vim.g.NERDTreeShowHidden = 1
+
+require("nvim-treesitter").setup({
+  -- Ensure you have language parsers installed
+  ensure_installed = { "lua", "python", "javascript", "go" },
+  sync_install = false,
+  auto_install = true, -- Automatically install missing parsers when entering buffer
+  highlight = { enable = true },
+})
+-- # Tree-Sitter 
+require("nvim-treesitter-textobjects").setup({
+  -- Configure textobjects extension
+  select = {
+    enable = true,
+    lookahead = true, -- Automatically jump forward to textobj
+    -- keymaps = {
+    --   ["af"] = "@function.outer",
+    --   ["if"] = "@function.inner",
+    --   ["ac"] = "@class.outer",
+    --   ["ic"] = "@class.inner",
+    -- },
+  },
+})
+local select = require("nvim-treesitter-textobjects.select")
+local move = require("nvim-treesitter-textobjects.move")
+
+-- Object motions
+
+-- function
+vim.keymap.set({ "n" }, "[[", function()
+  move.goto_previous_start("@function.outer", "textobjects")
+end, { desc = "Next function" })
+vim.keymap.set({ "n" }, "]]", function()
+  move.goto_next_start("@function.outer", "textobjects")
+end, { desc = "Next function" })
+
+vim.keymap.set({ "n" }, "[]", function()
+  move.goto_previous_end("@function.outer", "textobjects")
+end, { desc = "Next function" })
+vim.keymap.set({ "n" }, "][", function()
+  move.goto_next_end("@function.outer", "textobjects")
+end, { desc = "Next function" })
+
+vim.keymap.set({ "n" }, "[f", function()
+  move.goto_previous_start("@function.outer", "textobjects")
+end, { desc = "Next function" })
+vim.keymap.set({ "n" }, "]f", function()
+  move.goto_next_start("@function.outer", "textobjects")
+end, { desc = "Next function" })
+
+-- class
+vim.keymap.set({ "n" }, "[c", function()
+  move.goto_previous_start("@class.outer", "textobjects")
+end, { desc = "Next function" })
+
+vim.keymap.set({ "n" }, "]c", function()
+  move.goto_next_start("@class.outer", "textobjects")
+end, { desc = "Next function" })
+
+-- Text objects
+
+-- function
+vim.keymap.set({ "x", "o" }, "af", function()
+  select.select_textobject("@function.outer", "textobjects")
+end, { desc = "Select outer function" })
+
+vim.keymap.set({ "x", "o" }, "if", function()
+  select.select_textobject("@function.inner", "textobjects")
+end, { desc = "Select inner function" })
+
+-- class
+vim.keymap.set({ "x", "o" }, "ac", function()
+  select.select_textobject("@class.outer", "textobjects")
+end, { desc = "Select outer class" })
+
+vim.keymap.set({ "x", "o" }, "ic", function()
+  select.select_textobject("@class.inner", "textobjects")
+end, { desc = "Select inner class" })
+
+-- conditionals (if / else)
+vim.keymap.set({ "x", "o" }, "ai", function()
+  select.select_textobject("@conditional.outer", "textobjects")
+end, { desc = "Select outer conditional" })
+
+vim.keymap.set({ "x", "o" }, "ii", function()
+  select.select_textobject("@conditional.inner", "textobjects")
+end, { desc = "Select inner conditional body" })
+
+-- loops (for / while)
+vim.keymap.set({ "x", "o" }, "al", function()
+  select.select_textobject("@loop.outer", "textobjects")
+end, { desc = "Select outer loop" })
+
+vim.keymap.set({ "x", "o" }, "il", function()
+  select.select_textobject("@loop.inner", "textobjects")
+end, { desc = "Select inner loop body" })
+
 
 -- Check if we are running in WSL
 local is_wsl = (function()
@@ -517,7 +616,11 @@ vim.api.nvim_create_autocmd("User", {
 
 -- --- LSP ---
 
-require("mason").setup()
+require("mason").setup({
+  ensure_installed = {
+    "js-debug-adapter"
+  }
+})
 vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<CR>")
 vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { desc = "LSP started" })
 vim.keymap.set("n", "<leader>lr", "<cmd>LspRestart<CR>", { desc = "LSP restarted" })
@@ -529,11 +632,37 @@ vim.keymap.set('n', '<leader>co', function()
   vim.lsp.buf.code_action({
     apply = true,
     context = {
-      only = { "source.organizeImports.vtsls" },
+      only = { "source.organizeImports" },
       diagnostics = {},
     },
   })
 end, { desc = "Organize / Add Imports" })
+
+-- mouse shortcuts
+vim.keymap.set('n', '<C-LeftMouse>', '<LeftMouse><cmd>lua vim.lsp.buf.definition()<CR>', { desc = 'LSP Definition' })
+
+
+-- ALT + ENTER: Trigger auto-import for the missing item under cursor
+vim.keymap.set('n', '<A-CR>', function()
+  vim.lsp.buf.code_action({
+    filter = function(a)
+      -- todo
+      print(a)
+      -- Filters for import-related actions (matches common LSP action titles)
+      return a.title and a.title:lower():match("Update import from")
+    end,
+    apply = true, -- Automatically applies the action without showing a menu
+  })
+end, { desc = "LSP: Import missing item under cursor" })
+
+-- ALT + SHIFT + ENTER: Organize / Import all missing in the file
+vim.keymap.set('n', '<A-S-CR>', function()
+  -- Try running source.organizeImports code action
+  vim.lsp.buf.code_action({
+    context = { only = { "source.organizeImports" } },
+    apply = true,
+  })
+end, { desc = "LSP: Import all missing / Organize imports" })
 
 
 -- Lua Lsp types, needs to be set up before lua-ls
@@ -548,7 +677,7 @@ require("mason-lspconfig").setup({
   ensure_installed = {
     "lua_ls",
     "vtsls",
-    "emmet_ls"
+    "emmet_ls",
   },
 })
 
@@ -1024,21 +1153,54 @@ vim.api.nvim_create_autocmd("FileType", {
 })
 
 -- fugitive diff view
-vim.api.nvim_create_autocmd("BufWinEnter", {
-  desc = "Map 'q' to close Fugitive diff windows",
-  callback = function(args)
-    -- Check if this buffer was generated by Fugitive (e.g., "blob", "index")
-    local fugitive_type = vim.b[args.buf].fugitive_type
+-- vim.api.nvim_create_autocmd("BufWinEnter", {
+--   desc = "Map 'q' to close Fugitive diff windows",
+--   callback = function(args)
+--     -- Check if this buffer was generated by Fugitive (e.g., "blob", "index")
+--     local fugitive_type = vim.b[args.buf].fugitive_type
+--
+--     if fugitive_type then
+--       vim.keymap.set("n", "q", "<cmd>diffoff | close<CR>", {
+--         buffer = args.buf,
+--         silent = true,
+--         nowait = true,
+--       })
+--     end
+--   end,
+-- })
 
-    if fugitive_type then
-      vim.keymap.set("n", "q", "<cmd>diffoff | close<CR>", {
-        buffer = args.buf,
-        silent = true,
-        nowait = true,
-      })
+vim.api.nvim_create_autocmd("BufWinEnter", {
+  desc = "Close diff panes cleanly with q",
+  callback = function(args)
+    local is_fugitive_buf = vim.b[args.buf].fugitive_type ~= nil
+        or vim.api.nvim_buf_get_name(args.buf):find("^fugitive://") ~= nil
+
+    -- If we are inside a Fugitive buffer OR a diff split
+    if is_fugitive_buf or vim.wo.diff then
+      vim.keymap.set("n", "q", function()
+        if is_fugitive_buf then
+          -- Close the fugitive preview window and turn off diff mode in remaining window
+          vim.cmd("diffoff | close")
+        else
+          -- If pressed in the main local file during a diff, reset diffing
+          vim.cmd("diffoff")
+        end
+      end, { buffer = args.buf, silent = true, nowait = true })
     end
   end,
 })
+
+-- vim.api.nvim_create_autocmd({ "BufReadCmd", "BufWinEnter" }, {
+--   pattern = "fugitive://*",
+--   desc = "Map 'q' to close fugitive protocol buffers",
+--   callback = function(args)
+--     vim.keymap.set("n", "q", "<cmd>diffoff | close<CR>", {
+--       buffer = args.buf,
+--       silent = true,
+--       nowait = true,
+--     })
+--   end,
+-- })
 
 -- diff view close with 'q'
 vim.api.nvim_create_autocmd("FileType", {
@@ -1283,7 +1445,7 @@ vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end, { de
 -- Open or close the visual debug windows (Variables, Watch, Stack)
 vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { desc = "Toggle Debugger UI" })
 
--- Launch the server 
+-- Launch the server
 vim.keymap.set('n', '<leader>os', function()
   require('osv').launch({ port = 8086 })
 end, { desc = "Server Launch & Attach (OSV)" })
