@@ -31,6 +31,8 @@ Plug 'tpope/vim-unimpaired'
 -- Plug 'flazz/vim-colorschemes'
 Plug 'tomasiser/vim-code-dark'
 
+Plug 'luukvbaal/statuscol.nvim'
+
 -- smooth scrolling
 -- Plug 'psliwka/vim-smoothie'
 
@@ -94,6 +96,16 @@ Plug 'rafamadriz/friendly-snippets'
 -- Plug 'ncm2/ncm2-bufword'
 -- Plug 'ncm2/ncm2-path'
 
+-- Debugger
+Plug 'mfussenegger/nvim-dap'
+Plug 'nvim-neotest/nvim-nio' -- Required by dap-ui
+Plug 'rcarriga/nvim-dap-ui'
+Plug 'jbyuki/one-small-step-for-vimkind'
+
+Plug 'nvim-neotest/nvim-nio'
+Plug 'mfussenegger/nvim-dap'
+Plug('Joakker/lua-json5', { ['do'] = './install.sh' })
+
 -- Project based
 Plug 'ahmedkhalf/project.nvim'
 
@@ -129,10 +141,25 @@ vim.opt.smartcase = true      -- case insensitive search in lowercase and sensit
 vim.opt.expandtab = true      -- fill tabs with spaces
 vim.opt.tabstop = 2
 vim.opt.shiftwidth = 2
--- change to directory of currently opened file
---vim.opt.autochdir= true -- disabled, because nerdtree needs to display VCS Path
--- set sessionoptions-=blank  -- because nerdtree windows can't be saved with sessions
--- #TODO vim to lua
+
+-- Status column
+require('statuscol').setup({
+  -- right align numbers
+  relculright = true,
+
+  -- segments = {
+  --   { text = { builtin.foldfunc }, click = 'v:lua.ScFa' },
+  --   {
+  --     sign = { namespace = { 'diagnostic/signs' }, maxwidth = 2, auto = true },
+  --     click = 'v:lua.ScSa'
+  --   },
+  --   { text = { builtin.lnumfunc }, click = 'v:lua.ScLa', },
+  --   {
+  --     sign = { name = { '.*' }, maxwidth = 2, colwidth = 1, auto = true, wrap = true },
+  --     click = 'v:lua.ScSa'
+  --   },
+  -- }
+})
 
 
 -- ----  File Explorer  ----
@@ -1212,3 +1239,147 @@ vim.api.nvim_set_hl(0, "DiagnosticUnderlineWarn", { sp = muted_warning, undercur
 --     { "<Esc>", nil,                             { exit = true } },
 --   }
 -- })
+
+
+-- # Debugger
+-- ==========================================
+-- 1. Initialize the UI Panels
+-- ==========================================
+require("dapui").setup()
+
+-- ==========================================
+-- 2. Configure the Lua Debug Server
+-- ==========================================
+local dap = require("dap")
+
+dap.adapters.nlua = function(callback, config)
+  callback({
+    type = 'server',
+    host = config.host or "127.0.0.1",
+    port = config.port or 8086
+  })
+end
+
+dap.configurations.lua = {
+  {
+    type = 'nlua',
+    request = 'attach',
+    name = "Attach to running Neovim instance",
+  }
+}
+dap.configurations.javascript = {
+}
+-- (See `:h dap-configuration`)
+
+-- ==========================================
+-- 3. Set Up Keymaps
+-- ==========================================
+-- Toggle a visual breakpoint dot on the current line
+vim.keymap.set('n', '<leader>db', function() require('dap').toggle_breakpoint() end, { desc = "Toggle Breakpoint" })
+
+-- Start debugging or jump to the next breakpoint
+vim.keymap.set('n', '<leader>dc', function() require('dap').continue() end, { desc = "Continue/Start" })
+
+-- Open or close the visual debug windows (Variables, Watch, Stack)
+vim.keymap.set('n', '<leader>du', function() require('dapui').toggle() end, { desc = "Toggle Debugger UI" })
+
+-- Launch the server 
+vim.keymap.set('n', '<leader>os', function()
+  require('osv').launch({ port = 8086 })
+end, { desc = "Server Launch & Attach (OSV)" })
+
+
+local js_based_languages = {
+  "typescript",
+  "javascript",
+  "typescriptreact",
+  "javascriptreact",
+  "vue",
+}
+
+-- 1. Register the adapter directly
+-- local vscode_js_path = vim.fn.stdpath("data") .. "/plugged/vscode-js-debug"
+
+
+for _, adapter_type in ipairs({ "pwa-node", "pwa-chrome" }) do
+  dap.adapters[adapter_type] = {
+    type = "server",
+    host = "localhost",
+    port = "8123",
+    executable = {
+      command = "js-debug-adapter",
+    },
+  }
+end
+
+-- Setup nvim-dap signs & highlights
+vim.api.nvim_set_hl(0, "DapStoppedLine", { default = true, link = "Visual" })
+
+local dap_signs = {
+  Breakpoint = { "B", "DiagnosticSignError" },
+  BreakpointCondition = { "C", "DiagnosticSignWarn" },
+  BreakpointRejected = { "R", "DiagnosticSignHint" },
+  LogPoint = { "L", "DiagnosticSignInfo" },
+  Stopped = { "➔", "DiagnosticSignWarn", "DapStoppedLine" },
+}
+
+for name, sign in pairs(dap_signs) do
+  vim.fn.sign_define(
+    "Dap" .. name,
+    { text = sign[1], texthl = sign[2] or "DiagnosticInfo", linehl = sign[3], numhl = sign[3] }
+  )
+end
+
+for _, language in ipairs(js_based_languages) do
+  dap.configurations[language] = {
+    -- Debug single nodejs files
+    {
+      type = "pwa-node",
+      request = "launch",
+      name = "Launch file",
+      program = "${file}",
+      cwd = vim.fn.getcwd(),
+      sourceMaps = true,
+    },
+    -- Debug nodejs processes
+    {
+      type = "pwa-node",
+      request = "attach",
+      name = "Attach",
+      processId = require("dap.utils").pick_process,
+      cwd = vim.fn.getcwd(),
+      sourceMaps = true,
+    },
+    -- Debug web applications (client side)
+    {
+      type = "pwa-chrome",
+      request = "launch",
+      name = "Launch & Debug Chrome",
+      url = function()
+        local co = coroutine.running()
+        return coroutine.create(function()
+          vim.ui.input({
+            prompt = "Enter URL: ",
+            default = "http://localhost:3000",
+          }, function(url)
+            if url == nil or url == "" then
+              return
+            else
+              coroutine.resume(co, url)
+            end
+          end)
+        end)
+      end,
+      webRoot = vim.fn.getcwd(),
+      protocol = "inspector",
+      sourceMaps = true,
+      userDataDir = false,
+    },
+    -- Divider for launch.json derived configs
+    {
+      name = "----- ↓ launch.json configs ↓ -----",
+      type = "",
+      request = "launch",
+    },
+  }
+end
