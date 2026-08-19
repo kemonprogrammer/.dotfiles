@@ -28,3 +28,14 @@ vim.g.NERDTreeColorMapCustom = {
 -- ??
 vim.g.NERDTreeShowHidden = 1
 
+-- vim.keymap.set('n', '<leader>e', function()
+--   -- Evaluate the Vimscript dictionary method directly
+--   local is_open = vim.api.nvim_eval('g:NERDTree.IsOpen()') == 1
+--
+--   if is_open then
+--     vim.cmd('NERDTreeToggle')
+--   else
+--     vim.cmd('NERDTreeFind')
+--   end
+-- end, { desc = 'Find or Close NERDTree' })
+-- vim.keymap.set('n', '<leader>er', '<cmd>NERDTreeFind<CR>', { desc = 'Toggle Nerdtree' })

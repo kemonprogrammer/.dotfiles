@@ -40,17 +40,6 @@ vim.api.nvim_set_keymap('v', '<C-s>', '<cmd>update<CR>', { desc = 'Save' })
 vim.api.nvim_set_keymap('i', '<C-s>', '<C-o><cmd>update<CR>', { desc = 'Save and return to insert mode' })
 
 ---- Leader shortcuts
-vim.keymap.set('n', '<leader>e', function()
-  -- Evaluate the Vimscript dictionary method directly
-  local is_open = vim.api.nvim_eval('g:NERDTree.IsOpen()') == 1
-
-  if is_open then
-    vim.cmd('NERDTreeToggle')
-  else
-    vim.cmd('NERDTreeFind')
-  end
-end, { desc = 'Find or Close NERDTree' })
--- vim.keymap.set('n', '<leader>er', '<cmd>NERDTreeFind<CR>', { desc = 'Toggle Nerdtree' })
 
 ---- nmap <Leader>fzf :Files<CR>
 --nmap <Leader>f :GFiles<CR>
@@ -58,7 +47,10 @@ end, { desc = 'Find or Close NERDTree' })
 vim.keymap.set('n', '<leader>pc', '<cmd>PlugClean<CR>', { desc = 'Plug Clean' })
 vim.keymap.set('n', '<leader>pi', '<cmd>PlugInstall<CR>', { desc = 'Plug Install' })
 vim.keymap.set('n', '<leader>pu', '<cmd>PlugUpdate<CR>', { desc = 'Plug Update' })
+local plenary_reload = require('plenary.reload')
 vim.keymap.set('n', '<leader>so', function()
+  plenary_reload.reload_module('plugins')
+  plenary_reload.reload_module('config')
   vim.cmd('source ' .. vim.env.MYVIMRC)
   print("Sourced")
 end, { desc = 'Source init.lua' })

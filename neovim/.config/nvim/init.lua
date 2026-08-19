@@ -100,6 +100,7 @@ Plug 'preservim/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 -- Plug 'scrooloose/nerdtree-project-plugin'  -- line 45 throws an error
 Plug 'ryanoasis/vim-devicons'
+Plug 'nvim-tree/nvim-tree.lua'
 
 
 -- LSP
