@@ -44,16 +44,11 @@ vim.api.nvim_set_keymap('i', '<C-s>', '<C-o><cmd>update<CR>', { desc = 'Save and
 ---- nmap <Leader>fzf :Files<CR>
 --nmap <Leader>f :GFiles<CR>
 
+
 vim.keymap.set('n', '<leader>pc', '<cmd>PlugClean<CR>', { desc = 'Plug Clean' })
 vim.keymap.set('n', '<leader>pi', '<cmd>PlugInstall<CR>', { desc = 'Plug Install' })
 vim.keymap.set('n', '<leader>pu', '<cmd>PlugUpdate<CR>', { desc = 'Plug Update' })
-local plenary_reload = require('plenary.reload')
-vim.keymap.set('n', '<leader>so', function()
-  plenary_reload.reload_module('plugins')
-  plenary_reload.reload_module('config')
-  vim.cmd('source ' .. vim.env.MYVIMRC)
-  print("Sourced")
-end, { desc = 'Source init.lua' })
+vim.keymap.set('n', '<leader>so', Reload_config, { desc = 'Source init.lua' })
 
 
 local maximize_session = nil
@@ -74,6 +69,11 @@ local function maximize_toggle()
     vim.cmd("only")
   end
 end
+
+vim.keymap.set('n', '<M-h>', '<C-W>h')
+vim.keymap.set('n', '<M-l>', '<C-W>l')
+vim.keymap.set('n', '<M-j>', '<C-W>j')
+vim.keymap.set('n', '<M-k>', '<C-W>k')
 
 vim.keymap.set("n", "<C-W>O", maximize_toggle, { desc = "Maximize toggle" })
 vim.keymap.set("n", "<C-W>o", maximize_toggle, { desc = "Maximize toggle" })

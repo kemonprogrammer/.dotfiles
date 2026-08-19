@@ -13,13 +13,12 @@ vim.api.nvim_create_autocmd("BufWritePost", {
 
     -- Check if the path contains ".config/nvim/" anywhere
     if filepath:match("%.config/nvim/") then
-      -- Source your main init.lua
-      vim.cmd("source " .. vim.env.MYVIMRC)
-
-      -- Notify user
-      vim.notify("Config reloaded", vim.log.levels.INFO, { title = "Neovim" })
+      Reload_config()
     end
   end,
 })
 
 
+vim.keymap.set('n', '<leader>nc', function()
+  require("notify").dismiss({ pending = true, silent = true })
+end, { desc = "Dismiss all notifications" })

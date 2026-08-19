@@ -137,6 +137,13 @@ Is_wsl = (function()
   return false
 end)()
 
+local plenary_reload = require('plenary.reload')
+function Reload_config()
+  plenary_reload.reload_module('plugins')
+  plenary_reload.reload_module('config')
+  vim.cmd('source ' .. vim.env.MYVIMRC)
+  print("Sourced")
+end
 
 require("config.keymaps")
 require("config.options")

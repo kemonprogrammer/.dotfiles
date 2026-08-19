@@ -35,7 +35,7 @@ require('gitgraph').setup {
     GLRUCR           = '',
   },
   format = {
-    timestamp = '%H:%M:%S %d-%m-%Y',
+    timestamp = '%H:%M:%S %d.%m.%Y',
     fields = { 'hash', 'timestamp', 'author', 'branch_name', 'tag' },
   },
   hooks = {
@@ -48,16 +48,7 @@ require('gitgraph').setup {
       require("diffview").open({ from.hash, '..', to.hash })
     end,
   },
-  keys = {
-    {
-      "<leader>gl",
-      function()
-        require('gitgraph').draw({}, { all = true, max_count = 5000 })
-      end,
-      desc = "GitGraph - Draw",
-    }
-  },
-  log_level = 0
+  log_level = vim.log.levels.WARN,
 }
 
 vim.keymap.set('n', '<leader>gl',
