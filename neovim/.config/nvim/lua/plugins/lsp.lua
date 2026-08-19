@@ -1,11 +1,6 @@
 -- --- LSP ---
 
-require("mason").setup({
-  ensure_installed = {
-    "js-debug-adapter"
-  }
-})
-vim.keymap.set("n", "<leader>li", "<cmd>LspInfo<CR>")
+vim.keymap.set("n", "<leader>li", "<cmd>checkhealth vim.lsp<CR>")
 vim.keymap.set("n", "<leader>ls", "<cmd>LspStart<CR>", { desc = "LSP started" })
 vim.keymap.set("n", "<leader>lr", "<cmd>LspRestart<CR>", { desc = "LSP restarted" })
 vim.keymap.set("n", "<leader>le", "<cmd>LspStop<CR>", { desc = "LSP stopped" })
@@ -109,15 +104,23 @@ require("lazydev").setup({
   },
 })
 
+require("mason").setup({
+  ensure_installed = {
+    "js-debug-adapter"
+  }
+})
 
 require("mason-lspconfig").setup({
   ensure_installed = {
     "lua_ls",
     "vtsls",
     "emmet_ls",
+    "texlab",
+    "ltex",
+    "html",
+    "gopls",
   },
 })
-
 
 
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
@@ -145,12 +148,6 @@ vim.lsp.config['lua_ls'] = {
     },
   },
 }
-
-vim.lsp.config['lua_ls'] = {
-  -- filetypes = { "lua" },
-  capabilities = capabilities,
-}
-
 
 -- Fix ltex race condition, by only initializing it once
 -- also when opening up telescope immediately it shouldn't throws an error
@@ -294,34 +291,13 @@ vim.keymap.set('n', '<leader>lw', function()
   pcall(vim.cmd, action)
 end, { desc = 'Toggle Quickfix (Vimtex Errors)', silent = true })
 
--- -- Can't do that, because of quotes inside code listings
--- -- Create an augroup to manage LaTeX-specific settings
--- local tex_group = vim.api.nvim_create_augroup("TexFormat", { clear = true })
-
--- vim.api.nvim_create_autocmd("FileType", {
---     pattern = "tex",
---     group = tex_group,
---     callback = function()
---         vim.keymap.set('n', '<C-M-l>', function()
---             -- -- 1. Save current view (cursor position and scroll)
---             -- local view = vim.fn.winsaveview()
-
---             -- 2. Run the quote replacement (silent 'e' flag to avoid errors if no quotes found)
---             vim.cmd([[silent! %s/"\(.\{-}\)"/\\enquote{\1}/g]])
-
---             -- -- 4. Restore the view
---             -- vim.fn.winrestview(view)
-
---             print("LaTeX quotes replaced")
---         end, { buffer = true, desc = "Fix quotes" })
---     end,
--- })
 vim.keymap.set('n', '<C-M-l>', vim.lsp.buf.format, { desc = 'Format whole file' })
 
 
 -- --- Latex LSP ---
 
 vim.lsp.config['texlab'] = {
+  capabilities = capabilities,
   settings = {
     texlab = {
       completion = {
@@ -332,14 +308,10 @@ vim.lsp.config['texlab'] = {
     }
   }
 }
-
-
 vim.lsp.enable('texlab')
 
-
--- Writing
-
 vim.lsp.config['ltex'] = {
+  capabilities = capabilities,
   filetypes = { "bib", "gitcommit", "markdown", "org", "plaintex", "rst", "tex", "pandoc" },
   flags = {
     debounce_text_changes = 300,
@@ -362,16 +334,14 @@ vim.lsp.config['ltex'] = {
     }
   }
 }
-
-
 vim.lsp.enable('ltex')
 
 
 
 
-
 -- --- Explorer ---
-if is_wsl then
+
+if Is_wsl then
   vim.keymap.set("n", "<leader>se", "<cmd>silent !explorer.exe $(wslpath -w %:p:h)<CR>",
     { desc = "Open current file in explorer" })
 else
@@ -387,6 +357,7 @@ vim.api.nvim_set_hl(0, "EndOfBuffer", { fg = "bg" })
 --- Go
 
 vim.lsp.config['gopls'] = {
+  capabilities = capabilities,
   settings = {
     gopls = {
       analyses = {
@@ -397,7 +368,6 @@ vim.lsp.config['gopls'] = {
     },
   },
 }
-
 vim.lsp.enable('gopls')
 
 -- Create an augroup to prevent duplicate autocmds on config reload

@@ -96,11 +96,12 @@ Plug('nvim-telescope/telescope.nvim', { ['branch'] = 'master' })
 Plug('nvim-telescope/telescope-fzf-native.nvim', { ['do'] = 'make' })
 
 -- File explorer
-Plug 'preservim/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
+-- Plug 'preservim/nerdtree'
+-- Plug 'Xuyuanp/nerdtree-git-plugin'
 -- Plug 'scrooloose/nerdtree-project-plugin'  -- line 45 throws an error
 Plug 'ryanoasis/vim-devicons'
 Plug 'nvim-tree/nvim-tree.lua'
+Plug 'kemonprogrammer/nvim-lsp-file-operations'
 
 
 -- LSP
