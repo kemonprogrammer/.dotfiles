@@ -1,2 +1,2 @@
 [/]
-show-screenshot-ui=['Print', '<Super><Shift>s']
+show-screenshot-ui=['Print', '<Ctrl><Shift>s']

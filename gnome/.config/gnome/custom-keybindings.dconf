@@ -12,3 +12,8 @@ name='Text extractor (NormCap)'
 binding='<Shift><Super>c'
 command='flatpak run nl.hjdskes.gcolor3'
 name='Color Picker'
+
+[custom3]
+binding='<Control><Super>s'
+command='flameshot gui'
+name='Screenshot'

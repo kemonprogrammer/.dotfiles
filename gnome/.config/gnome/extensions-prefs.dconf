@@ -1,5 +1,6 @@
 [clipboard-indicator]
 excluded-apps=['KeePass']
+history-size=30
 keep-selected-on-clear=true
 move-item-first=true
 pinned-on-bottom=true
@@ -11,6 +12,7 @@ animation-time=0.10000000000000002
 autohide=true
 autohide-in-fullscreen=true
 background-opacity=0.80000000000000004
+custom-theme-shrink=true
 dash-max-icon-size=40
 disable-overview-on-startup=true
 dock-fixed=true
@@ -20,6 +22,7 @@ height-fraction=0.40000000000000002
 hide-delay=0.10000000000000002
 intellihide=true
 intellihide-mode='ALL_WINDOWS'
+max-alpha=0.80000000000000004
 multi-monitor=true
 preferred-monitor=-2
 preferred-monitor-by-connector='eDP-1'
@@ -29,6 +32,42 @@ running-indicator-style='DOTS'
 show-delay=1.3877787807814457e-17
 show-dock-urgent-notify=true
 show-mounts-network=true
+transparency-mode='DYNAMIC'
+
+[dash2dock-lite]
+animate-icons-unmute=true
+animation-bounce-height=0.75
+animation-magnify=0.29999999999999999
+animation-rise=0.25
+animation-spread=0.75
+apps-icon-front=false
+autohide-dash=false
+autohide-speed=0.5
+border-radius=3.0
+customize-label=false
+customize-topbar=true
+dock-location=1
+dock-padding=0.0
+edge-distance=0.25555555555555554
+icon-border-radius=3.0
+icon-effect-color=(1.0, 1.0, 1.0, 1.0)
+icon-shadow=true
+icon-size=0.1206896551724138
+icon-spacing=0.11618257261410789
+items-pullout-angle=0.5
+label-border-radius=0.0
+mounted-icon=true
+msg-to-ext=''
+overview-transparent-background=false
+panel-mode=false
+preferred-monitor=0
+pressure-sense=false
+pressure-sense-sensitivity=0.40000000000000002
+running-indicator-size=2
+running-indicator-style=1
+scroll-sensitivity=0.40000000000000002
+separator-thickness=0
+shrink-icons=true
 
 [just-perfection]
 panel-in-overview=true
@@ -39,8 +78,18 @@ window-demands-attention-focus=true
 available-indicators=['clipboardIndicator']
 
 [multi-monitors-bar]
-available-indicators=@as []
+available-indicators=['clipboardIndicator', 'system-monitor']
 screenshot-on-all-monitors=true
+
+[nightthemeswitcher/commands]
+enabled=false
+
+[nightthemeswitcher/time]
+location=(53.04716993653652, 11.074999999999999)
+manual-schedule=false
+nightthemeswitcher-ondemand-keybinding=['']
+sunrise=6.4673136621777161
+sunset=20.17623771511964
 
 [system-monitor-next-applet]
 background='#ffffff16'
@@ -55,7 +104,7 @@ battery-show-text=true
 battery-style='digit'
 battery-time=false
 center-display=false
-compact-display=false
+compact-display=true
 cpu-display=true
 cpu-graph-width=50
 cpu-individual-cores=false
@@ -107,7 +156,7 @@ gpu-show-text=true
 gpu-style='graph'
 gpu-used-color='#00b35b'
 icon-display=false
-left-display=false
+left-display=true
 memory-buffer-color='#00ff82'
 memory-cache-color='#77767bff'
 memory-display=true
@@ -118,6 +167,7 @@ memory-refresh-time=5000
 memory-show-menu=true
 memory-show-text=true
 memory-style='both'
+monitors=['{"uuid":"ebca7e10453d213e60888d376a36be2f","type":"cpu","device":"all","display":true,"style":"both","graph-width":50,"refresh-time":1500,"show-text":true,"show-menu":true,"colors":{"user":"#0072b3","system":"#0092e6","nice":"#00a3ff","iowait":"#002f3d","other":"#001d26"}}', '{"uuid":"a9e9fc4ab0792dd092d7ff0c6a36be2f","type":"freq","device":"all","display":false,"style":"graph","graph-width":100,"refresh-time":1500,"show-text":false,"show-menu":false,"colors":{"freq":"#001d26"},"display-mode":"max"}', '{"uuid":"232eb15fa9a076b0d2e8da226a36be2f","type":"memory","device":"default","display":true,"style":"both","graph-width":50,"refresh-time":5000,"show-text":true,"show-menu":true,"colors":{"program":"#00b35b","buffer":"#00ff82","cache":"#77767bff"}}', '{"uuid":"6ac7ca8fda5b05f0350a25516a36be2f","type":"swap","device":"default","display":false,"style":"graph","graph-width":100,"refresh-time":5000,"show-text":true,"show-menu":true,"colors":{"used":"#8b00c3"}}', '{"uuid":"e57a7c809a88b0080540fd4f6a36be2f","type":"net","device":"all","display":true,"style":"both","graph-width":50,"refresh-time":1000,"show-text":true,"show-menu":true,"colors":{"down":"#fce94f","downerrors":"#ff6e00","up":"#fb74fb","uperrors":"#e0006e","collisions":"#ff0000"},"speed-in-bits":false}', '{"uuid":"e608edf23fb51bdb38be66106a36be2f","type":"disk","device":"all","display":false,"style":"graph","graph-width":100,"refresh-time":2000,"show-text":true,"show-menu":true,"colors":{"read":"#c65000","write":"#ff6700"}}', '{"uuid":"6ba67b959be381f497eabdf26a36be2f","type":"gpu","device":"0","display":false,"style":"graph","graph-width":100,"refresh-time":5000,"show-text":true,"show-menu":false,"colors":{"used":"#00b35b","memory":"#00ff82"}}', '{"uuid":"e0b9db130be19d89783698dc6a36be2f","type":"thermal","device":"coretemp - Core 0","display":true,"style":"digit","graph-width":100,"refresh-time":5000,"show-text":true,"show-menu":true,"colors":{"tz0":"#f2002e"},"fahrenheit-unit":false,"threshold":0}', '{"uuid":"421b8cbe0a2a9e26d6243d9c6a36be2f","type":"fan","device":"","display":false,"style":"graph","graph-width":100,"refresh-time":5000,"show-text":true,"show-menu":true,"colors":{"fan0":"#f2002e"}}', '{"uuid":"5c87cd24f37834628cc049366a36be2f","type":"battery","device":"default","display":false,"style":"digit","graph-width":100,"refresh-time":5000,"show-text":true,"show-menu":false,"colors":{"batt0":"#f2002e"},"time":false,"hidesystem":false}']
 move-clock=false
 net-collisions-color='#ff0000'
 net-display=true
@@ -132,9 +182,9 @@ net-speed-in-bits=false
 net-style='both'
 net-up-color='#fb74fb'
 net-uperrors-color='#e0006e'
-rotate-labels=false
-settings-schema-version=1
-show-tooltip=false
+rotate-labels=true
+settings-schema-version=2
+show-tooltip=true
 swap-display=false
 swap-graph-width=100
 swap-position=3
